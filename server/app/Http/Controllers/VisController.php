@@ -13,20 +13,21 @@ class VisController extends Controller
     public function getCompany()
     {
         $id = request('id');
-        $company = CompanyInfo::query()->where('company_id',$id)->get();
-        return response()->json($company);
+        $company = CompanyInfo::query()->where('company_id', $id)->first();
+        return $this->json($company);
+
     }
 
     public function hotPosition()
     {
         $city = request('city');
-        $query=RecruitmentInfo::query();
-        if($city){
-            $query->where('City',$city);
+        $query = RecruitmentInfo::query();
+        if ($city) {
+            $query->where('City', $city);
         }
-        $company =$query->select(DB::raw('count(PositionName) as count,PositionName'))
+        $company = $query->select(DB::raw('count(PositionName) as count,PositionName'))
             ->groupBy("PositionName")
-            ->orderBy("count",'desc')
+            ->orderBy("count", 'desc')
             ->limit(10)
             ->get();
         return $this->json($company);
@@ -34,13 +35,17 @@ class VisController extends Controller
 
     public function workYear()
     {
-        $company = RecruitmentInfo::query()
-            ->select(DB::raw('count(WorkYear) as count,WorkYear,Salary'))
-            ->groupBy("WorkYear")
-            ->groupBy("Salary")
-            ->orderBy("Salary",'desc')
-//            ->limit(7)
-            ->get();
+        $type = request('type');
+        if ($type) {
+            $company = RecruitmentInfo::query()->select(DB::raw('count(WorkYear) as count,WorkYear,Salary'));
+            $company->groupBy("WorkYear")
+                ->groupBy("Salary")->orderBy("Salary", 'desc');
+        } else {
+            $company = RecruitmentInfo::query()->select(DB::raw('count(WorkYear) as count,WorkYear'));
+            $company->groupBy("WorkYear")
+                ->orderBy("WorkYear", 'desc');
+        }
+        $company=$company->get();
         return $this->json($company);
     }
 
@@ -49,18 +54,19 @@ class VisController extends Controller
         $company = RecruitmentInfo::query()
             ->select(DB::raw('count(City) as count,City'))
             ->groupBy("City")
-            ->orderBy("count",'desc')
-//            ->limit(7)
+            ->orderBy("count", 'desc')
             ->get();
+
         return $this->json($company);
     }
 
-    public function positionChangeWithYear()
+    public function education()
     {
         $company = RecruitmentInfo::query()
-            ->select(DB::raw('count(City) as count,City'))
-            ->groupBy("City")
-            ->orderBy("count",'desc')
+            ->select(DB::raw('count(*) as count,Education,FinanceStage'))
+            ->groupBy("Education")
+            ->groupBy("FinanceStage")
+            ->orderBy("count", 'desc')
 //            ->limit(7)
             ->get();
         return $this->json($company);
