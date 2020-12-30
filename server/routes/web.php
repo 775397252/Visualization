@@ -15,8 +15,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $api=<<<EOT
+欢迎访问首页接口：<br>
+vis/getCompany :公司信息<br>
+vis/hotPosition :最热职业（不带参数看全部）<br>
+vis/workYear :经验要求<br>
+vis/city :地域分布<br>
+EOT;
+    return $api;
 });
 
 
 Route::get('vis/getCompany', [VisController::class, 'getCompany']);
+Route::get('vis/hotPosition', [VisController::class, 'hotPosition']);
+Route::get('vis/workYear', [VisController::class, 'workYear']);
+Route::get('vis/city', [VisController::class, 'city']);
