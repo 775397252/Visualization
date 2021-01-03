@@ -95,7 +95,7 @@ class VisController extends Controller
             if( false!==strpos($item['FinanceStage'],'null')){
 
             }else{
-                $res[$item['FinanceStage']][] = $item;
+                $res[$item['Education']][] = $item;
             }
 
         }
