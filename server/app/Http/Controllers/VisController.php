@@ -47,11 +47,11 @@ class VisController extends Controller
         }
         $company = $company->get();
         $res = [];
-        $price=[];
+        $price = [];
         foreach ($company as $item) {
 //            $k=mb_substr($item['Salary'],0,2);
 //            if(in_array($k,$price)){
-                $res[$item['WorkYear']][]=$item;
+            $res[$item['WorkYear']][] = $item;
 //            }else{
 //                $res[$k]=$item;
 //            }
@@ -59,11 +59,11 @@ class VisController extends Controller
 //                $res[$item['WorkYear']][] = $item;
 //            }
         }
-        $new=[];
-        foreach ($res as $kwy=>$re) {
-            $mail=collect($re)->sortByDesc('count')->values()->take(5);
+        $new = [];
+        foreach ($res as $kwy => $re) {
+            $mail = collect($re)->sortByDesc('count')->values()->take(5);
 //            $res2=collect($re)->sortBy('count')->take(5);
-            $new[$kwy]=$mail;
+            $new[$kwy] = $mail;
         }
         return $this->json($new);
 
@@ -88,18 +88,63 @@ class VisController extends Controller
             ->groupBy("Education")
             ->groupBy("FinanceStage")
             ->orderBy("count", 'desc')
-//            ->limit(7)
             ->get();
+//        return $company;
         $res = [];
         foreach ($company as $item) {
-            if( false!==strpos($item['FinanceStage'],'null')){
+            if (false !== strpos($item['FinanceStage'], 'null')) {
 
-            }else{
-                $res[$item['Education']][] = $item;
+            } else {
+                $res[$item['FinanceStage']][] = $item;
+            }
+        }
+        //
+        $column = [
+            "初创型(未融资)",
+            "成长型(A轮)",
+            "上市公司",
+            "初创型(天使轮)",
+            "成长型(B轮)",
+            "成长型(B轮)",
+            "成长型(不需要融资)",
+            "成熟型(C轮)",
+            "成熟型(不需要融资)",
+            "初创型(不需要融资)",
+            "成熟型(D轮及以上)",
+        ];
+        $column2 = [
+            "大专" => 0,
+            "本科" => 1,
+            "学历不限" => 2,
+            "硕士" => 3,
+            "博士" => 4,
+            "高中" => 5,
+            "中专" => 6,
+            "初中" => 7,
+        ];
+        $label = [
+            "大专" ,
+            "本科" ,
+            "学历不限" ,
+            "硕士",
+            "博士" ,
+            "高中" ,
+            "中专" ,
+            "初中" ,
+        ];
+        foreach ($column as $item) {
+            for ($i = 0; $i < 8; $i++) {
+                $res[$item][$i] = 0;
+            }
+        }
+        foreach ($company as $k => $item) {
+//            $res[$k]['大专']=
+            if (in_array($item['FinanceStage'], $column)) {
+                $res[$item['FinanceStage']][$column2[$item["Education"]]] = $item['count'];
             }
 
         }
-        return $this->json($res);
+        return $this->json($res,$label);
     }
 
 }
