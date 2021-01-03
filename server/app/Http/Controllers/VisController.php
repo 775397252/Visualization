@@ -45,8 +45,29 @@ class VisController extends Controller
             $company->groupBy("WorkYear")
                 ->orderBy("WorkYear", 'desc');
         }
-        $company=$company->get();
-        return $this->json($company);
+        $company = $company->get();
+        $res = [];
+        $price=[];
+        foreach ($company as $item) {
+//            $k=mb_substr($item['Salary'],0,2);
+//            if(in_array($k,$price)){
+                $res[$item['WorkYear']][]=$item;
+//            }else{
+//                $res[$k]=$item;
+//            }
+//            if ($item['count'] > 500) {
+//                $res[$item['WorkYear']][] = $item;
+//            }
+        }
+        $new=[];
+        foreach ($res as $kwy=>$re) {
+            $mail=collect($re)->sortByDesc('count')->values()->take(5);
+//            $res2=collect($re)->sortBy('count')->take(5);
+            $new[$kwy]=$mail;
+        }
+        return $this->json($new);
+
+
     }
 
     public function city()
@@ -69,7 +90,16 @@ class VisController extends Controller
             ->orderBy("count", 'desc')
 //            ->limit(7)
             ->get();
-        return $this->json($company);
+        $res = [];
+        foreach ($company as $item) {
+            if( false!==strpos($item['FinanceStage'],'null')){
+
+            }else{
+                $res[$item['FinanceStage']][] = $item;
+            }
+
+        }
+        return $this->json($res);
     }
 
 }
