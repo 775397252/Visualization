@@ -138,6 +138,11 @@ class VisController extends Controller
             ->orderBy("meanSalary", 'desc')
             ->limit(10)
             ->get();
+        foreach ($company as $k=>$item) {
+            $company[$k]['order']=round($item['meanSalary']/$item['count'],1)*10;
+            $company[$k]['meanSalary']=round($item['meanSalary']/$item['count'],1).'k';
+        }
+        $company = collect($company)->sortByDesc('order')->values();
         return $this->json($company);
     }
 }
