@@ -37,35 +37,36 @@ class VisController extends Controller
     {
         $type = request('type');
         if ($type) {
-            $company = RecruitmentInfo::query()->select(DB::raw('count(WorkYear) as count,WorkYear,Salary'));
-            $company->groupBy("WorkYear")
-                ->groupBy("Salary")->orderBy("Salary", 'desc');
+            $company = RecruitmentInfo::query()->select(DB::raw('count(Salary) as count,Salary'));
+            $company->groupBy("Salary")->orderBy("Salary", 'desc');
         } else {
             $company = RecruitmentInfo::query()->select(DB::raw('count(WorkYear) as count,WorkYear'));
             $company->groupBy("WorkYear")
                 ->orderBy("WorkYear", 'desc');
         }
-        $company = $company->get();
-        $res = [];
-        $price = [];
-        foreach ($company as $item) {
-//            $k=mb_substr($item['Salary'],0,2);
-//            if(in_array($k,$price)){
-            $res[$item['WorkYear']][] = $item;
-//            }else{
-//                $res[$k]=$item;
-//            }
-//            if ($item['count'] > 500) {
-//                $res[$item['WorkYear']][] = $item;
-//            }
-        }
-        $new = [];
-        foreach ($res as $kwy => $re) {
-            $mail = collect($re)->sortByDesc('count')->values()->take(5);
-//            $res2=collect($re)->sortBy('count')->take(5);
-            $new[$kwy] = $mail;
-        }
-        return $this->json($new);
+        $company = $company->get()->sortByDesc('count')->values()->take(10);
+        //            $mail = collect($re)->sortByDesc('count')->values()->take(5);
+
+//        $res = [];
+//        $price = [];
+//        foreach ($company as $item) {
+////            $k=mb_substr($item['Salary'],0,2);
+////            if(in_array($k,$price)){
+//            $res[$item['WorkYear']][] = $item;
+////            }else{
+////                $res[$k]=$item;
+////            }
+////            if ($item['count'] > 500) {
+////                $res[$item['WorkYear']][] = $item;
+////            }
+//        }
+//        $new = [];
+//        foreach ($company as $kwy => $re) {
+//            $mail = collect($re)->sortByDesc('count')->values()->take(5);
+////            $res2=collect($re)->sortBy('count')->take(5);
+//            $new[$kwy] = $mail;
+//        }
+        return $this->json($company);
 
 
     }
