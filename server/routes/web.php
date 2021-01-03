@@ -31,3 +31,4 @@ Route::get('vis/hotPosition', [VisController::class, 'hotPosition']);
 Route::get('vis/workYear', [VisController::class, 'workYear']);
 Route::get('vis/city', [VisController::class, 'city']);
 Route::get('vis/education', [VisController::class, 'education']);
+Route::get('vis/positionSalary', [VisController::class, 'positionSalary']);

@@ -41,11 +41,10 @@ class meanSalary extends Command
     public function handle()
     {
         // 清除职位信息
-        RecruitmentInfo::query()->chunkById(100, function ($values) {
+        RecruitmentInfo::query()->whereNull('meanSalary')->chunkById(100, function ($values) {
             foreach ($values as $value) {
                 echo "正在更新平均工资：{$value['PositionId']}" . PHP_EOL;
                 $meanSalary = explode('-', $value['Salary']);
-                var_dump($meanSalary);
                 if (count($meanSalary) == 2) {
                     $meanSalary = ((int)$meanSalary[0] +(int)$meanSalary[1]) * 500;
                     RecruitmentInfo::query()

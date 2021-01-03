@@ -45,30 +45,7 @@ class VisController extends Controller
                 ->orderBy("WorkYear", 'desc');
         }
         $company = $company->get()->sortByDesc('count')->values()->take(10);
-        //            $mail = collect($re)->sortByDesc('count')->values()->take(5);
-
-//        $res = [];
-//        $price = [];
-//        foreach ($company as $item) {
-////            $k=mb_substr($item['Salary'],0,2);
-////            if(in_array($k,$price)){
-//            $res[$item['WorkYear']][] = $item;
-////            }else{
-////                $res[$k]=$item;
-////            }
-////            if ($item['count'] > 500) {
-////                $res[$item['WorkYear']][] = $item;
-////            }
-//        }
-//        $new = [];
-//        foreach ($company as $kwy => $re) {
-//            $mail = collect($re)->sortByDesc('count')->values()->take(5);
-////            $res2=collect($re)->sortBy('count')->take(5);
-//            $new[$kwy] = $mail;
-//        }
         return $this->json($company);
-
-
     }
 
     public function city()
@@ -148,4 +125,19 @@ class VisController extends Controller
         return $this->json($res,$label);
     }
 
+
+    public function positionSalary()
+    {
+        $city = request('city');
+        $query = RecruitmentInfo::query();
+        if ($city) {
+            $query->where('City', $city);
+        }
+        $company = $query->select(DB::raw('sum(meanSalary)/1000 as meanSalary,count(1) as count,PositionName'))
+            ->groupBy("PositionName")
+            ->orderBy("meanSalary", 'desc')
+            ->limit(10)
+            ->get();
+        return $this->json($company);
+    }
 }
