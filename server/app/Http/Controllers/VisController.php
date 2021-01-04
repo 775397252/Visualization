@@ -69,28 +69,40 @@ class VisController extends Controller
             ->get();
 //        return $company;
         $res = [];
-        foreach ($company as $item) {
-            if (false !== strpos($item['FinanceStage'], 'null')) {
-
-            } else {
-                $res[$item['FinanceStage']][] = $item;
-            }
-        }
+//        foreach ($company as $item) {
+//            if (false !== strpos($item['FinanceStage'], 'null')) {
+//
+//            } else {
+//                $res[$item['FinanceStage']][] = $item;
+//            }
+//        }
         //
-        $column = [
-            "初创型(未融资)",
+        $Stage = [
+            "初创型(未融资)" => 0,
+            "成长型(A轮)" => 1,
+            "上市公司" => 2,
+            "初创型(天使轮)"=> 3,
+            "成长型(B轮)" => 4,
+            "成长型(不需要融资)"=> 5,
+            "成熟型(C轮)"=> 6,
+            "D轮及以上"=> 6,
+            "成熟型(不需要融资)"=> 7,
+            "初创型(不需要融资)"=> 8,
+            "成熟型(D轮及以上)"=> 9,
+        ];
+          $StageLabel = [
+            "初创型(未融资)" ,
             "成长型(A轮)",
-            "上市公司",
+            "上市公司" ,
             "初创型(天使轮)",
-            "成长型(B轮)",
-            "成长型(B轮)",
+            "成长型(B轮)" ,
             "成长型(不需要融资)",
             "成熟型(C轮)",
             "成熟型(不需要融资)",
             "初创型(不需要融资)",
             "成熟型(D轮及以上)",
         ];
-        $column2 = [
+        $Education = [
             "大专" => 0,
             "本科" => 1,
             "学历不限" => 2,
@@ -100,7 +112,7 @@ class VisController extends Controller
             "中专" => 6,
             "初中" => 7,
         ];
-        $label = [
+        $EducationLabel = [
             "大专" ,
             "本科" ,
             "学历不限" ,
@@ -110,19 +122,21 @@ class VisController extends Controller
             "中专" ,
             "初中" ,
         ];
-        foreach ($column as $item) {
-            for ($i = 0; $i < 8; $i++) {
+        foreach ($EducationLabel as $k=>$item) {
+            for ($i = 0; $i < count($StageLabel); $i++) {
                 $res[$item][$i] = 0;
             }
         }
+//        return $res;
         foreach ($company as $k => $item) {
-//            $res[$k]['大专']=
-            if (in_array($item['FinanceStage'], $column)) {
-                $res[$item['FinanceStage']][$column2[$item["Education"]]] = $item['count'];
+            if (in_array($item['Education'], $EducationLabel)) {
+                if(!empty($Stage[$item["FinanceStage"]])){
+                    $res[$item['Education']][$Stage[$item["FinanceStage"]]] = $item['count'];
+                }
             }
 
         }
-        return $this->json($res,$label);
+        return $this->json($res,$StageLabel);
     }
 
 

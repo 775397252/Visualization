@@ -40,7 +40,7 @@ class meanSalary extends Command
      */
     public function handle()
     {
-        // 清除职位信息
+        // 正在更新平均工资
         RecruitmentInfo::query()->whereNull('meanSalary')->chunkById(100, function ($values) {
             foreach ($values as $value) {
                 echo "正在更新平均工资：{$value['PositionId']}" . PHP_EOL;
