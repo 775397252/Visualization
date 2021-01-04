@@ -67,7 +67,6 @@ class VisController extends Controller
             ->groupBy("FinanceStage")
             ->orderBy("count", 'desc')
             ->get();
-//        return $company;
         $res = [];
 //        foreach ($company as $item) {
 //            if (false !== strpos($item['FinanceStage'], 'null')) {
@@ -85,12 +84,11 @@ class VisController extends Controller
             "成长型(B轮)" => 4,
             "成长型(不需要融资)"=> 5,
             "成熟型(C轮)"=> 6,
-            "D轮及以上"=> 6,
             "成熟型(不需要融资)"=> 7,
             "成熟型(D轮及以上)"=> 8,
         ];
-          $StageLabel = [
-            "初创型(不需要融资)" ,
+        $StageLabel = [
+            "初创型(不需要融资)",
             "成长型(A轮)",
             "上市公司" ,
             "初创型(天使轮)",
@@ -125,12 +123,11 @@ class VisController extends Controller
                 $res[$item][$i] = 0;
             }
         }
-//        return $res;
         foreach ($company as $k => $item) {
-            if (in_array($item['Education'], $EducationLabel)) {
-                if(!empty($Stage[$item["FinanceStage"]])){
+            if (in_array($item['Education'], $EducationLabel)&&in_array($item["FinanceStage"],$StageLabel)) {
+//                if(!empty($Stage[$item["FinanceStage"]])){
                     $res[$item['Education']][$Stage[$item["FinanceStage"]]] = $item['count'];
-                }
+//                }
             }
 
         }
