@@ -1,0 +1,16 @@
+.el-dialog__header {
+    border: 1px solid #dcdfe6;
+}
+.el-dialog__title {
+    font-weight: 600;
+}
+.el-dialog__body {
+    padding: 30px 80px 15px 50px ;
+}
+.el-dialog__footer {
+    border-top: 1px solid #dcdfe6;
+}
+.list-container {
+    height: calc(100vh - 140px);
+    background: #fff;
+}
