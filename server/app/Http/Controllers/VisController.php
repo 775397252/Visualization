@@ -24,7 +24,7 @@ class VisController extends Controller
     public function hotPosition()
     {
         $city = request('city');
-        $value = Cache::get('hotPosition'.$city, function () use ($city) {
+        $value = Cache::get('hotPosition' . $city, function () use ($city) {
             $query = RecruitmentInfo::query();
             if ($city) {
                 $query->where('City', $city);
@@ -34,7 +34,7 @@ class VisController extends Controller
                 ->orderBy("count", 'desc')
                 ->limit(10)
                 ->get();
-            Cache::put('hotPosition'.$city, $company, $this->seconds);
+            Cache::put('hotPosition' . $city, $company, $this->seconds);
             return $company;
         });
         return $this->json($value);
@@ -43,27 +43,36 @@ class VisController extends Controller
     public function workYear()
     {
         $type = request('type');
+        $city = request('city');
         if ($type) {
-            $value = Cache::get('workYear1', function () {
-                $k['0-5k'] = RecruitmentInfo::query()->whereBetween('meanSalary', [0, 5000])->count();
-                $k['5-10k'] = RecruitmentInfo::query()->whereBetween('meanSalary', [5000, 10000])->count();
-                $k['10-20k'] = RecruitmentInfo::query()->whereBetween('meanSalary', [10000, 20000])->count();
-                $k['20-30k'] = RecruitmentInfo::query()->whereBetween('meanSalary', [20000, 30000])->count();
-                $k['30-50k'] = RecruitmentInfo::query()->whereBetween('meanSalary', [30000, 50000])->count();
-                $k['50k以上'] = RecruitmentInfo::query()->whereBetween('meanSalary', [50000, 10000000])->count();
+            $value = Cache::get('workYear1' . $city, function () use ($city) {
+                $query = RecruitmentInfo::query();
+                if ($city) {
+                    $query->where('City', $city);
+                }
+                $k['0-5k'] = (clone $query)->whereBetween('meanSalary', [0, 5000])->count();
+                $k['5-10k'] = (clone $query)->whereBetween('meanSalary', [5000, 10000])->count();
+                $k['10-20k'] = (clone $query)->whereBetween('meanSalary', [10000, 20000])->count();
+                $k['20-30k'] = (clone $query)->whereBetween('meanSalary', [20000, 30000])->count();
+                $k['30-50k'] = (clone $query)->whereBetween('meanSalary', [30000, 50000])->count();
+                $k['50k以上'] = (clone $query)->whereBetween('meanSalary', [50000, 10000000])->count();
                 foreach ($k as $key => $item) {
                     $company[] = ["count" => $item, "Salary" => $key];
                 }
-                Cache::put('workYear1', $company, $this->seconds);
+                Cache::put('workYear1' . $city, $company, $this->seconds);
                 return $company;
             });
         } else {
-            $value = Cache::get('workYear2', function () {
-                $company = RecruitmentInfo::query()->select(DB::raw('count(WorkYear) as count,WorkYear'));
+            $value = Cache::get('workYear2' . $city, function () use ($city) {
+                $query = RecruitmentInfo::query();
+                if ($city) {
+                    $query->where('City', $city);
+                }
+                $company = $query->select(DB::raw('count(WorkYear) as count,WorkYear'));
                 $company->groupBy("WorkYear")
                     ->orderBy("WorkYear", 'desc');
                 $company = $company->get()->sortByDesc('count')->values()->take(10);
-                Cache::put('workYear2', $company, $this->seconds);
+                Cache::put('workYear2' . $city, $company, $this->seconds);
                 return $company;
             });
         }
@@ -157,7 +166,7 @@ class VisController extends Controller
     public function positionSalary()
     {
         $city = request('city');
-        $value = Cache::get('positionSalary'.$city, function () use ($city) {
+        $value = Cache::get('positionSalary' . $city, function () use ($city) {
             $query = RecruitmentInfo::query();
             if ($city) {
                 $query->where('City', $city);
@@ -172,7 +181,7 @@ class VisController extends Controller
                 $company[$k]['meanSalary'] = round($item['meanSalary'] / $item['count'], 1) . 'k';
             }
             $company = collect($company)->sortByDesc('order')->values();
-            Cache::put('positionSalary'.$city, $company, $this->seconds);
+            Cache::put('positionSalary' . $city, $company, $this->seconds);
             return $company;
         });
 
