@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class VisController extends Controller
 {
-    public $seconds = 3600;
+    public $seconds = 3600*24*60;
 
     public function getCompany()
     {
