@@ -97,7 +97,7 @@ class VisController extends Controller
             "成熟型(不需要融资)",
             "成熟型(D轮及以上)",
         ];
-        $value = Cache::get('education1', function () use ($StageLabel) {
+        $value = Cache::get('education_qqq', function () use ($StageLabel) {
             $company = RecruitmentInfo::query()
                 ->select(DB::raw('count(*) as count,Education,FinanceStage'))
                 ->groupBy("Education")
@@ -146,7 +146,7 @@ class VisController extends Controller
                     $res[$item['Education']][$Stage[$item["FinanceStage"]]] = $item['count'];
                 }
             }
-            Cache::put('education1', $company, $this->seconds);
+            Cache::put('education_qqq', $res, $this->seconds);
             return $res;
         });
 
